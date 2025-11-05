@@ -20,12 +20,12 @@ struct PushNotificationApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
+                .onAppear {
+                    AppDelegate.sharedAppState = appState
+                    requestNotificationPermission()
+                }
         }
     }
-    init() {
-        requestNotificationPermission()
-    }
-    
     private func requestNotificationPermission() {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in

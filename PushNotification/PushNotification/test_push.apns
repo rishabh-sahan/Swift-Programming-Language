@@ -12,6 +12,6 @@
   "extraData": {
     "type": "test",
     "userId": 1234,
-    "screenName": "Home"
+    "screenName": "HomeView"
   }
 }
