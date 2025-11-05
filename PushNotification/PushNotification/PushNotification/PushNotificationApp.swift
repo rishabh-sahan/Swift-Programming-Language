@@ -7,12 +7,19 @@
 
 import SwiftUI
 
+class AppState: ObservableObject {
+    @Published var navigateTo: String? = nil
+}
+
 @main
+
 struct PushNotificationApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private  var appState = AppState()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appState)
         }
     }
     init() {
@@ -33,6 +40,7 @@ struct PushNotificationApp: App {
     }
 }
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    static var sharedAppState: AppState?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         return true
@@ -44,6 +52,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         if let extraData = userInfo["extraData"] as? [String: Any],
            let screenName = extraData["screenName"] as? String {
             print("Navigate to screen:", screenName)
+            DispatchQueue.main.async {
+                AppDelegate.sharedAppState?.navigateTo = screenName
+            }
         }
         completionHandler([.banner, .sound])
     }
@@ -54,6 +65,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         if let extraData = userInfo["extraData"] as? [String: Any],
            let screenName = extraData["screenName"] as? String {
             print("Navigate to screen:", screenName)
+            DispatchQueue.main.async {
+                AppDelegate.sharedAppState?.navigateTo = screenName
+            }
         }
         completionHandler()
     }
